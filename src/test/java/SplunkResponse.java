@@ -2,7 +2,8 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 /**
  * Created by darshan on 6/29/18.
  */
-public class Response {
+public class
+SplunkResponse {
     Reviews reviews;
     CloseableHttpResponse httpResponse;
 
@@ -24,7 +25,7 @@ public class Response {
 
     @Override
     public String toString() {
-        return "Response{" +
+        return "SplunkResponse{" +
                 "reviews=" + reviews +
                 ", httpResponse=" + httpResponse +
                 '}';

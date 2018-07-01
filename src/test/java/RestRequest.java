@@ -11,12 +11,10 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicHeader;
 import org.junit.Assert;
-import org.junit.Test;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
 
 /**
  * Created by darshan on 6/29/18.
@@ -27,7 +25,7 @@ public class RestRequest {
     /**
      * curl -X GET https://splunk.mocklab.io/movies?q=batman -H Accept: "application/json";
      */
-    public Response getRequest(URIBuilder uriBuilder) throws URISyntaxException, IOException {
+    public SplunkResponse getRequest(URIBuilder uriBuilder) throws URISyntaxException, IOException {
 
         CloseableHttpClient httpClient = HttpClients.createDefault();
         HttpUriRequest request = RequestBuilder.get().setUri(uriBuilder.build())
@@ -40,11 +38,11 @@ public class RestRequest {
         Assert.assertEquals(httpResponse.getStatusLine().getStatusCode(), 200);
         String theString = IOUtils.toString(httpResponse.getEntity().getContent(), StandardCharsets.UTF_8.toString());
         Reviews reviews = objectMapper.readValue(theString, Reviews.class);
-        System.out.println(reviews.getReviews().size());
-        Response response = new Response();
-        response.reviews = reviews;
-        response.httpResponse = httpResponse;
-        return response;
+        //System.out.println(reviews.getReviews().size());
+        SplunkResponse splunkResponse = new SplunkResponse();
+        splunkResponse.reviews = reviews;
+        splunkResponse.httpResponse = httpResponse;
+        return splunkResponse;
     }
 
     /**
@@ -54,7 +52,7 @@ public class RestRequest {
      * @throws IOException
      */
 
-    public Response postRequest(URIBuilder uriBuilder,String jsonBody) throws URISyntaxException, IOException {
+    public SplunkResponse postRequest(URIBuilder uriBuilder, String jsonBody) throws URISyntaxException, IOException {
 
         CloseableHttpClient httpClient = HttpClients.createDefault();
 
@@ -64,10 +62,10 @@ public class RestRequest {
 
         CloseableHttpResponse httpResponse = httpClient.execute(request);
 
-        Response response = new Response();
-        response.httpResponse = httpResponse;
+        SplunkResponse splunkResponse = new SplunkResponse();
+        splunkResponse.httpResponse = httpResponse;
         System.out.println(httpResponse);
-        return response;
+        return splunkResponse;
     }
 }
 

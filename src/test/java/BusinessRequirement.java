@@ -1,8 +1,10 @@
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.client.utils.URIBuilder;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
-
+import org.junit.runner.RunWith;
+import org.junit.runners.BlockJUnit4ClassRunner;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.HashSet;
@@ -11,22 +13,29 @@ import java.util.List;
 /**
  * Created by darshan on 6/29/18.
  */
-
+@RunWith(BlockJUnit4ClassRunner.class)
 public class BusinessRequirement {
 
-    public Response getAllResponses(String movie) throws URISyntaxException, IOException {
-        Response response;
+    private SplunkResponse splunkResponse;
+    @Before
+    public void before() throws IOException, URISyntaxException {
+        splunkResponse = getAllResponses("");
+    }
+
+
+    public SplunkResponse getAllResponses(String movie) throws URISyntaxException, IOException {
+        SplunkResponse splunkResponse;
         RestRequest main = new RestRequest();
         URIBuilder uriBuilder = new URIBuilder();
         uriBuilder.setHost("splunk.mocklab.io").setScheme("https").setPath("/movies").addParameter("q", movie);
-        response = main.getRequest(uriBuilder);
+        splunkResponse = main.getRequest(uriBuilder);
 
-        return response;
+        return splunkResponse;
     }
 
-    public Response getSpecificMovieWithOrWithoutCount(String movie, int count)
+    public SplunkResponse getSpecificMovieWithOrWithoutCount(String movie, int count)
             throws URISyntaxException, IOException {
-        Response response;
+        SplunkResponse splunkResponse;
         RestRequest main = new RestRequest();
         URIBuilder uriBuilder = new URIBuilder();
         if (count > 0) {
@@ -38,10 +47,10 @@ public class BusinessRequirement {
                     setPath("/movies").addParameter("q", movie);
         }
 
-        response = main.getRequest(uriBuilder);
-        Assert.assertEquals(response.httpResponse.getStatusLine().getStatusCode(), 200);
+        splunkResponse = main.getRequest(uriBuilder);
+        Assert.assertEquals(splunkResponse.httpResponse.getStatusLine().getStatusCode(), 200);
 
-        return response;
+        return splunkResponse;
     }
 
     public boolean noMoviesShouldHaveSameImage(Reviews reviews) {
@@ -113,54 +122,43 @@ public class BusinessRequirement {
 
     @Test
     public void testToGetSpecificMovie() throws URISyntaxException, IOException {
-        Response response = getSpecificMovieWithOrWithoutCount("spidey", -1);
-        Assert.assertEquals(response.httpResponse.getStatusLine().getStatusCode(), 200);
-        Assert.assertEquals(response.reviews.getReviews().get(0).getTitle(), "spidey");
+        SplunkResponse splunkResponse = getSpecificMovieWithOrWithoutCount("spidey", -1);
+        Assert.assertEquals(splunkResponse.httpResponse.getStatusLine().getStatusCode(), 200);
+        Assert.assertEquals(splunkResponse.reviews.getReviews().get(0).getTitle(), "spidey");
     }
 
     @Test
     public void testToGetSpecificMovieWithCount() throws URISyntaxException, IOException {
-        Response response = getSpecificMovieWithOrWithoutCount("spidey", 2);
-        Assert.assertEquals(response.httpResponse.getStatusLine().getStatusCode(), 200);
-        Assert.assertEquals(response.reviews.getReviews().size(), 2);
+        SplunkResponse splunkResponse = getSpecificMovieWithOrWithoutCount("spidey", 2);
+        Assert.assertEquals(splunkResponse.httpResponse.getStatusLine().getStatusCode(), 200);
+        Assert.assertEquals(splunkResponse.reviews.getReviews().size(), 2);
     }
 
-
-    public void testNoMoviesShouldHaveSameImage(Response response) {
-        try {
-            Assert.assertEquals(noMoviesShouldHaveSameImage(response.reviews), true);
-        } catch (Exception ex) {
-            System.out.println("Exception from testNoMoviesShouldHaveSameImage() " + ex.getMessage());
-        }
+    @Test
+    public void testNoMoviesShouldHaveSameImage() {
+            Assert.assertEquals("Failed to verify that No movie should have Same image", noMoviesShouldHaveSameImage(splunkResponse.reviews), true);
     }
 
-
-    public void testCheckTitleHasPalindrome(Response response) {
+    @Test
+    public void testCheckTitleHasPalindrome() {
         try {
-            Assert.assertEquals(checkTitleHasPalindrome(response.reviews), true);
+            Assert.assertEquals("Failed to verify that Title has Palindrome",checkTitleHasPalindrome(splunkResponse.reviews), true);
         } catch (Exception ex) {
             System.out.println("Exception from testCheckTitleHasPalindrome()" + ex.getMessage());
         }
     }
 
-
-    public void testSumOfGenIdMaxSeven(Response response) {
-        try {
-            Assert.assertEquals(sumOfGenIdMaxSeven(response.reviews), true);
-        } catch (Exception ex) {
-            System.out.println("Exception from testSumOfGenIdMaxSeven()" + ex.getMessage());
-        }
+    @Test
+    public void testSumOfGenIdMaxSeven() {
+            Assert.assertEquals("Failed to verify that Title has Palindrome",sumOfGenIdMaxSeven(splunkResponse.reviews), true);
     }
 
 
     @Test
-    public void testBusinessRequirement() throws URISyntaxException, IOException {
-        Response response = getAllResponses("");
-        Assert.assertEquals(response.httpResponse.getStatusLine().getStatusCode(), 200);
-        testNoMoviesShouldHaveSameImage(response);
-        testCheckTitleHasPalindrome(response);
-        testSumOfGenIdMaxSeven(response);
+    public void testRestStatus() {
+        Assert.assertEquals(splunkResponse.httpResponse.getStatusLine().getStatusCode(), 200);
     }
+
 
     @Test
     public void testPostMethod() throws URISyntaxException, IOException {
@@ -170,7 +168,7 @@ public class BusinessRequirement {
         uriBuilder.setHost("splunk.mocklab.io").setScheme("https").setPath("/movies");
         Movie movie = new Movie("spidey", "spider man description");
         String jsonBody = objectMapper.writeValueAsString(movie);
-        Response response = restRequest.postRequest(uriBuilder, jsonBody);
-        Assert.assertEquals(response.httpResponse.getStatusLine().getStatusCode(), 200);
+        SplunkResponse splunkResponse = restRequest.postRequest(uriBuilder, jsonBody);
+        Assert.assertEquals(splunkResponse.httpResponse.getStatusLine().getStatusCode(), 200);
     }
 }
