@@ -8,9 +8,6 @@ import org.junit.runners.BlockJUnit4ClassRunner;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * Created by darshan on 6/29/18.
