@@ -53,6 +53,55 @@ public class Util {
         return result;
     }
 
+    public static boolean checkSortingRequirment(Reviews reviews) {
+        int count = getCountForSortingRequiment(reviews);
+        if (reviews.getReviews().size() == count) {
+            return true;
+        } else {
+            System.out.println("Number of count is failed " + (reviews.getReviews().size() - count));
+            return false;
+        }
+    }
+
+    public static int getCountForSortingRequiment(Reviews reviews) {
+        boolean nullCheck = false;
+        int count = 0;
+        for (int i = 0; i < reviews.getReviews().size(); i++) {
+            Review review = reviews.getReviews().get(i);
+            if (review.genre_ids.size() > 0) {
+                nullCheck = true;
+            }
+            if (nullCheck) {
+                if (review.getGenre_ids().size() == 0) continue;
+                if (checkAscendingGenreId(review)) {
+                    count++;
+                }
+            } else {
+                if (i >= 1) {
+                    if (reviews.getReviews().get(i - 1).getId() < reviews.getReviews().get(i).getId()) {
+                        continue;
+                    } else {
+                        count++;
+                    }
+                }
+            }
+
+        }
+        return count;
+    }
+
+
+    public static boolean checkAscendingGenreId(Review review) {
+        boolean result = true;
+        for (int i = 1; i < review.getGenre_ids().size(); i++) {
+            if (review.getGenre_ids().get(i - 1) > review.getGenre_ids().get(i)) {
+                result = false;
+                break;
+            }
+        }
+        return result;
+    }
+
     public static boolean noMoviesShouldHaveSameImage(Reviews reviews) {
         HashSet<String> uniqueImagePath = new HashSet<>();
         Boolean isContainUniquePath = true;

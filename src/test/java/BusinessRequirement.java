@@ -71,23 +71,28 @@ public class BusinessRequirement {
     }
 
     @Test
+    public void testSortingRequirement() {
+        Assert.assertEquals("Failed to Verify Sorting requirement" ,Util.checkSortingRequirment(splunkResponse.reviews), true);
+    }
+
+    @Test
     public void testNoMoviesShouldHaveSameImage() {
-        Assert.assertEquals("Failed to verify that No movie should have Same image", Util.noMoviesShouldHaveSameImage(splunkResponse.reviews), true);
+        Assert.assertEquals("Failed to verify that No two movies should have the same image",
+                Util.noMoviesShouldHaveSameImage(splunkResponse.reviews), true);
 
     }
 
     @Test
     public void testCheckTitleHasPalindrome() {
-        try {
-            Assert.assertEquals("Failed to verify that Title has Palindrome", Util.checkTitleHasPalindrome(splunkResponse.reviews), true);
-        } catch (Exception ex) {
-            System.out.println("Exception from testCheckTitleHasPalindrome()" + ex.getMessage());
-        }
+        Assert.assertEquals("Failed to verify that There is at least one movie in the database whose" +
+                        " title has a palindrome in it.", Util.checkTitleHasPalindrome(splunkResponse.reviews),
+                true);
     }
 
     @Test
     public void testSumOfGenIdMaxSeven() {
-        Assert.assertEquals("Failed to verify that Title has Palindrome", Util.sumOfGenIdMaxSeven(splunkResponse.reviews), true);
+        Assert.assertEquals("Failed to verify that The number of movies whose sum of genre_ids >400 " +
+                "should be no more than 7.", Util.sumOfGenIdMaxSeven(splunkResponse.reviews), true);
     }
 
 
