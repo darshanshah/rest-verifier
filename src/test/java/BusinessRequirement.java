@@ -5,11 +5,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.BlockJUnit4ClassRunner;
-
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.HashSet;
-import java.util.List;
 
 /**
  * Created by darshan on 6/29/18.
@@ -50,7 +47,7 @@ public class BusinessRequirement {
         }
 
         splunkResponse = main.getRequest(uriBuilder);
-        Assert.assertEquals(splunkResponse.httpResponse.getStatusLine().getStatusCode(), 200);
+        Assert.assertEquals(200, splunkResponse.httpResponse.getStatusLine().getStatusCode());
 
         return splunkResponse;
     }
@@ -58,52 +55,58 @@ public class BusinessRequirement {
 
     @Test
     public void testToGetSpecificMovie() throws URISyntaxException, IOException {
-        SplunkResponse splunkResponse = getSpecificMovieWithOrWithoutCount("spidey", -1);
-        Assert.assertEquals(splunkResponse.httpResponse.getStatusLine().getStatusCode(), 200);
-        Assert.assertEquals(splunkResponse.reviews.getReviews().get(0).getTitle(), "spidey");
+        String movieString = "batman";
+        SplunkResponse splunkResponse = getSpecificMovieWithOrWithoutCount(movieString, -1);
+        Assert.assertEquals(200, splunkResponse.httpResponse.getStatusLine().getStatusCode());
+        Assert.assertEquals("Failed to Verify Test With Specific Movie",
+                movieString, splunkResponse.reviews.getReviews().get(0).getTitle());
     }
 
     @Test
     public void testToGetSpecificMovieWithCount() throws URISyntaxException, IOException {
-        SplunkResponse splunkResponse = getSpecificMovieWithOrWithoutCount("spidey", 2);
-        Assert.assertEquals(splunkResponse.httpResponse.getStatusLine().getStatusCode(), 200);
-        Assert.assertEquals(splunkResponse.reviews.getReviews().size(), 2);
+        String movieString = "batman";
+        SplunkResponse splunkResponse = getSpecificMovieWithOrWithoutCount(movieString, 2);
+        Assert.assertEquals(200, splunkResponse.httpResponse.getStatusLine().getStatusCode());
+        Assert.assertEquals("Failed To verify Get Specific movie with count",
+                2, splunkResponse.reviews.getReviews().size());
     }
 
     @Test
     public void testSortingRequirement() {
-        Assert.assertEquals("Failed to Verify Sorting requirement" ,Util.checkSortingRequirment(splunkResponse.reviews), true);
+        Assert.assertEquals("Failed to Verify Sorting requirement", true,
+                Util.checkSortingRequirment(splunkResponse.reviews));
     }
 
     @Test
     public void testNoMoviesShouldHaveSameImage() {
-        Assert.assertEquals("Failed to verify that No two movies should have the same image",
-                Util.noMoviesShouldHaveSameImage(splunkResponse.reviews), true);
+        Assert.assertEquals("Failed to verify that No two movies should have the same image", true,
+                Util.noMoviesShouldHaveSameImage(splunkResponse.reviews));
 
     }
 
     @Test
     public void testCheckTitleHasPalindrome() {
         Assert.assertEquals("Failed to verify that There is at least one movie in the database whose" +
-                        " title has a palindrome in it.", Util.checkTitleHasPalindrome(splunkResponse.reviews),
-                true);
+                        " title has a palindrome in it.", true,
+                Util.checkTitleHasPalindrome(splunkResponse.reviews)
+        );
     }
 
     @Test
     public void testSumOfGenIdMaxSeven() {
         Assert.assertEquals("Failed to verify that The number of movies whose sum of genre_ids >400 " +
-                "should be no more than 7.", Util.sumOfGenIdMaxSeven(splunkResponse.reviews), true);
+                "should be no more than 7.", true, Util.sumOfGenIdMaxSeven(splunkResponse.reviews));
     }
 
 
     @Test
     public void testRestStatus() {
-        Assert.assertEquals(splunkResponse.httpResponse.getStatusLine().getStatusCode(), 200);
+        Assert.assertEquals(200, splunkResponse.httpResponse.getStatusLine().getStatusCode());
     }
 
 
     @Test
-    public void testPostMethod() throws URISyntaxException, IOException {
+    public void testPostStatus() throws URISyntaxException, IOException {
         URIBuilder uriBuilder = new URIBuilder();
         ObjectMapper objectMapper = new ObjectMapper();
         RestRequest restRequest = new RestRequest();
@@ -111,6 +114,26 @@ public class BusinessRequirement {
         Movie movie = new Movie("spidey", "spider man description");
         String jsonBody = objectMapper.writeValueAsString(movie);
         SplunkResponse splunkResponse = restRequest.postRequest(uriBuilder, jsonBody);
-        Assert.assertEquals(splunkResponse.httpResponse.getStatusLine().getStatusCode(), 200);
+        Assert.assertEquals(200, splunkResponse.httpResponse.getStatusLine().getStatusCode());
+    }
+
+    @Test
+    public void testPostRequestInGet() throws URISyntaxException, IOException {
+        String movieString = "spidey";
+        URIBuilder uriBuilder = new URIBuilder();
+        ObjectMapper objectMapper = new ObjectMapper();
+        RestRequest restRequest = new RestRequest();
+        uriBuilder.setHost("splunk.mocklab.io").setScheme("https").setPath("/movies");
+        Movie movie = new Movie(movieString, "spider man description");
+        String jsonBody = objectMapper.writeValueAsString(movie);
+        SplunkResponse splunkResponse = restRequest.postRequest(uriBuilder, jsonBody);
+        Assert.assertEquals(200, splunkResponse.httpResponse.getStatusLine().getStatusCode());
+
+
+        SplunkResponse splunkGetResponse = getSpecificMovieWithOrWithoutCount(movieString, 1);
+        Assert.assertEquals(200, splunkGetResponse.httpResponse.getStatusLine().getStatusCode());
+        Assert.assertEquals("Failed to Verified Post request", movieString, splunkGetResponse.reviews.getReviews().get(0).getTitle());
+
+
     }
 }
