@@ -1,7 +1,6 @@
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by darshan on 6/29/18.
@@ -20,6 +19,21 @@ public class Reviews {
 
     public void setReviews(List<Review> reviews) {
         this.reviews = reviews;
+    }
+
+    public void sortByTitleLength() {
+        Collections.sort(getReviews(), new Comparator<Review>() {
+            @Override
+            public int compare(Review o1, Review o2) {
+                if (o1.getTitle().length() < o2.getTitle().length()) {
+                    return -1;
+                } else if (o1.getTitle().length() == o2.getTitle().length()) {
+                    return 0;
+                } else {
+                    return 1;
+                }
+            }
+        });
     }
 
     @Override

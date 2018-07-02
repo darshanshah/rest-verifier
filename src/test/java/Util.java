@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
@@ -31,8 +33,7 @@ public class Util {
         return true;
     }
 
-    public static boolean sumOfGenIdMaxSeven(Reviews reviews) {
-        boolean result = true;
+    public static int sumOfGenId(Reviews reviews) {
         int count = 0;
         for (int i = 0; i < reviews.getReviews().size(); i++) {
             Review review = reviews.getReviews().get(i);
@@ -47,14 +48,11 @@ public class Util {
             }
         }
 
-        if (count > 7) {
-            result = false;
-        }
-        return result;
+        return count;
     }
 
-    public static boolean checkSortingRequirment(Reviews reviews) {
-        int count = getCountForSortingRequiment(reviews);
+    public static boolean checkSortingRequirement(Reviews reviews) {
+        int count = getCountForSortingRequirement(reviews);
         if (reviews.getReviews().size() == count) {
             return true;
         } else {
@@ -63,7 +61,7 @@ public class Util {
         }
     }
 
-    public static int getCountForSortingRequiment(Reviews reviews) {
+    public static int getCountForSortingRequirement(Reviews reviews) {
         boolean nullCheck = false;
         int count = 0;
         for (int i = 0; i < reviews.getReviews().size(); i++) {
@@ -78,7 +76,7 @@ public class Util {
                 }
             } else {
                 if (i >= 1) {
-                    if (reviews.getReviews().get(i - 1).getId() < reviews.getReviews().get(i).getId()) {
+                    if (reviews.getReviews().get(i - 1).getId() > reviews.getReviews().get(i).getId()) {
                         continue;
                     } else {
                         count++;
@@ -100,6 +98,28 @@ public class Util {
             }
         }
         return result;
+    }
+
+    public static int checkTitleContainTitle(Reviews reviews) {
+        ArrayList<Review> listOfReview = new ArrayList<>(reviews.getReviews().size() + 1);
+
+        for (Review review : reviews.getReviews()) {
+            listOfReview.add(review);
+        }
+        Reviews rev = new Reviews();
+        rev.setReviews(listOfReview);
+        rev.sortByTitleLength();
+        int counter = 0;
+        for (int i = 0; i < rev.getReviews().size(); i++) {
+            for (int j = i + 1; j < rev.getReviews().size(); j++) {
+                if (rev.getReviews().get(j).getTitle().contains(rev.getReviews().get(i).getTitle())) {
+                    counter++;
+                    continue;
+                }
+            }
+        }
+
+        return counter;
     }
 
     public static boolean noMoviesShouldHaveSameImage(Reviews reviews) {

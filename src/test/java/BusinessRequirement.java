@@ -5,8 +5,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.BlockJUnit4ClassRunner;
+
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Created by darshan on 6/29/18.
@@ -67,14 +71,14 @@ public class BusinessRequirement {
         String movieString = "batman";
         SplunkResponse splunkResponse = getSpecificMovieWithOrWithoutCount(movieString, 2);
         Assert.assertEquals(200, splunkResponse.httpResponse.getStatusLine().getStatusCode());
-        Assert.assertEquals("Failed To verify Get Specific movie with count",
-                2, splunkResponse.reviews.getReviews().size());
+        Assert.assertTrue("Failed To verify Get Specific movie with count",
+                splunkResponse.reviews.getReviews().size() == 2);
     }
 
     @Test
     public void testSortingRequirement() {
         Assert.assertEquals("Failed to Verify Sorting requirement", true,
-                Util.checkSortingRequirment(splunkResponse.reviews));
+                Util.checkSortingRequirement(splunkResponse.reviews));
     }
 
     @Test
@@ -94,8 +98,9 @@ public class BusinessRequirement {
 
     @Test
     public void testSumOfGenIdMaxSeven() {
-        Assert.assertEquals("Failed to verify that The number of movies whose sum of genre_ids >400 " +
-                "should be no more than 7.", true, Util.sumOfGenIdMaxSeven(splunkResponse.reviews));
+        int counter = Util.sumOfGenId(splunkResponse.reviews);
+        Assert.assertTrue("Failed to verify that The number of movies whose sum of genre_ids >400 " +
+                "should be no more than 7.", counter <= 7);
     }
 
 
@@ -104,6 +109,12 @@ public class BusinessRequirement {
         Assert.assertEquals(200, splunkResponse.httpResponse.getStatusLine().getStatusCode());
     }
 
+    @Test
+    public void testTitleContainTitle() {
+        int counter = Util.checkTitleContainTitle(splunkResponse.reviews);
+        System.out.println(counter);
+        Assert.assertTrue(counter >= 2);
+    }
 
     @Test
     public void testPostStatus() throws URISyntaxException, IOException {
