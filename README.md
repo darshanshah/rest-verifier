@@ -23,18 +23,17 @@ Running the tests :
 
 List Of Bug:
 
-1. Bugs on Post service:
-    1.  Post is not working. like its not updating data.(Since this Mocklab so it will not going to
-        update any data)(P.S. :Not able to test boundary and edge cases since its not working
-        like: multiple blank movie)
-2. Bugs on Get Service
-    1.  when you ask for specific movie record.
-        It is not giving you specific movie record instead it gives all movies collection.
-    2.  when you ask for Count of movie then its not giving proper count of data.
-    3.  Sorting requirement is not satisfying(i.e
-        1. Movies with genre_ids == null should be first in response.
-        2. if multiple movies have genre_ids == null,
-        then sort by id (ascending). For movies that have non-null genre_ids,
-        results should be sorted by id (ascending)
-
+11. Bugs on Post service:
+     1. Post is not working. like its not updating data.(Since this Mocklab
+        so it will not going to update any data)(P.S. :Not able to test boundary
+        and edge cases since its not working like: multiple blank moive)
+ 2. Bugs on Get Service
+     1. when you ask for specific movie record. It is not giving you specific
+        movie record instead it gives all movies collection.
+     2. when you ask for Count of movie then its not giving proper count of data.
+     3. inconsistency in poster_path. It contains invalid url.
+     4. Sorting requirement is not satisfying(i.e
+         1. Movies with genre_ids == null should be first in response.
+         2. if multiple movies have genre_ids == null, then sort by id (ascending).
+            For movies that have non-null genre_ids, results should be sorted by id (ascending)
 
