@@ -1,5 +1,6 @@
+import org.apache.commons.validator.routines.UrlValidator;
+
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
@@ -31,6 +32,21 @@ public class Util {
             }
         }
         return true;
+    }
+
+    public static boolean isValidURL(Reviews reviews) {
+        String[] schemes = {"http", "https"}; // DEFAULT schemes = "http", "https", "ftp"
+        UrlValidator urlValidator = new UrlValidator(schemes);
+        for (int i = 0; i < reviews.getReviews().size(); i++) {
+            Review review = reviews.getReviews().get(i);
+            if (review.getPoster_path() == null) continue;
+            if (!urlValidator.isValid(review.getPoster_path())) {
+                return false;
+            }
+        }
+        return true;
+
+
     }
 
     public static int sumOfGenId(Reviews reviews) {

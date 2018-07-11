@@ -11,7 +11,7 @@ Getting Started :
         Java 7 + Junit: to run the whole project and run all the test cases.
         Maven :  to build and install dependency.
         httpclient : to get all access of the http response.
-        
+
 
 
 Running the tests :
@@ -26,7 +26,7 @@ List Of Bug:
 1. Bugs on Post service:
     1.  Post is not working. like its not updating data.(Since this Mocklab so it will not going to
         update any data)(P.S. :Not able to test boundary and edge cases since its not working
-        like: multiple blank moive)
+        like: multiple blank movie)
 2. Bugs on Get Service
     1.  when you ask for specific movie record.
         It is not giving you specific movie record instead it gives all movies collection.

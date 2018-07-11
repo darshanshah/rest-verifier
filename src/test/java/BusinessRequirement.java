@@ -74,14 +74,20 @@ public class BusinessRequirement {
 
     @Test
     public void testSortingRequirement() {
-        Assert.assertEquals("Failed to Verify Sorting requirement", true,
+        Assert.assertEquals("Failed to verify Sorting requirement", true,
                 Util.checkSortingRequirement(splunkResponse.reviews));
     }
 
     @Test
     public void testNoMoviesShouldHaveSameImage() {
-        Assert.assertEquals("Failed to verify that No two movies should have the same image", true,
-                Util.noMoviesShouldHaveSameImage(splunkResponse.reviews));
+        Assert.assertEquals("Failed to verify that No two movies should have the same image",
+                true, Util.noMoviesShouldHaveSameImage(splunkResponse.reviews));
+    }
+
+    @Test
+    public void testPosterUrl() {
+        Assert.assertEquals("Failed to verify Poster Path",
+                true, Util.isValidURL(splunkResponse.reviews));
 
     }
 
